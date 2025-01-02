@@ -1,6 +1,4 @@
 defmodule Ovo.Rewrites do
-  alias Ovo.Ast
-
   def rewrite_node({:infix, [left, right], op}) do
     {
       :call,
@@ -128,7 +126,7 @@ defmodule Ovo.Rewrites do
             {:list, [], nil}
           ]
         },
-        {:symbol, [], "reduce"},
+        {:symbol, [], "reduce"}
       }
       | rewrite_node_list(rest)
     ]

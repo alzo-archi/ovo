@@ -31,8 +31,6 @@ defmodule Ovo.Builtins do
       "divide" => &divide(&1, &2),
       "map_access" => &map_access(&1, &2),
       "map_set" => &map_set(&1, &2),
-      "shake" => &shake(&1, &2),
-      "rshake" => &rshake(&1, &2),
       "greater_or_equals" => &greater_or_equals(&1, &2),
       "lesser_or_equals" => &lesser_or_equals(&1, &2),
       "strictly_greater" => &strictly_greater(&1, &2),
@@ -238,33 +236,6 @@ defmodule Ovo.Builtins do
     case map_nodes(nodes, env) do
       [a, a] -> Ovo.Ast.bool(true)
       _ -> Ovo.Ast.bool(false)
-    end
-  end
-
-  defp shake(nodes, env) do
-    case map_nodes(nodes, env) do
-      [%{callable: _fun, key: k}] ->
-        Agent.get_and_update(env, fn state ->
-          case state.shakes |> Map.get(k) do
-            nil -> {:error, state}
-            [] -> {:error, state}
-            [a] -> {a, state |> put_in([:shakes, k], [])}
-            [h | t] -> {h, state |> put_in([:shakes, k], t)}
-          end
-        end)
-
-      _ ->
-        :error
-    end
-  end
-
-  defp rshake(nodes, env) do
-    case map_nodes(nodes, env) do
-      [{:string, _, v}] ->
-        Ovo.Runner.shake(v)
-
-      _ ->
-        :error
     end
   end
 

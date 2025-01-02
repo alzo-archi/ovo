@@ -3,14 +3,12 @@ defmodule Ovo.Env do
           evaluator_pid: pid(),
           parent: pid() | nil,
           user: map(),
-          shakes: map(),
           builtins: map()
         }
   defstruct [
     :evaluator_pid,
     :parent,
     :user,
-    :shakes,
     :builtins
   ]
 
@@ -39,7 +37,6 @@ defmodule Ovo.Env do
       evaluator_pid: evaluator_pid,
       parent: nil,
       user: %{},
-      shakes: %{},
       builtins: Ovo.Builtins.builtins()
     }
 
@@ -52,7 +49,6 @@ defmodule Ovo.Env do
       Agent.get(env, & &1)
       |> Map.put(:parent, env)
       |> Map.put(:user, %{})
-      |> Map.put(:shakes, %{})
       |> Map.put(:builtins, %{})
 
     {:ok, fork_pid} = start_link(state)

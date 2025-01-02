@@ -32,10 +32,6 @@ defmodule Ovo.Printer do
     "#{vv} = #{print_node(expr)}"
   end
 
-  def print_node({:shake, _, v}) do
-    "!#{print_node(v)}"
-  end
-
   def print_node({:bool, _, s}), do: if(s, do: "T", else: "F")
 
   def print_node({:symbol, _, val}) do

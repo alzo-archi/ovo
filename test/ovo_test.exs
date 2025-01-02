@@ -212,27 +212,6 @@ defmodule OvoTest do
     parse_print_parse(code)
   end
 
-  test "tokenizes shakes" do
-    code = """
-    !\\ ->
-      add(a, b)
-    end
-    """
-
-    assert Ovo.tokenize(code) == [
-             {:shake, nil},
-             {:backslash, nil},
-             {:arrow, nil},
-             {:symbol, "add"},
-             {:open_paren, nil},
-             {:symbol, "a"},
-             {:comma, nil},
-             {:symbol, "b"},
-             {:close_paren, nil},
-             {:end, nil}
-           ]
-  end
-
   test "0-arity Lambda print loop" do
     code = """
     \\ ->
@@ -256,16 +235,6 @@ defmodule OvoTest do
   test "n-arity Lambda print loop" do
     code = """
     \\a, b ->
-      add(a, b)
-    end
-    """
-
-    parse_print_parse(code)
-  end
-
-  test "n-arity shakeed Lambda print loop" do
-    code = """
-    !\\a, b ->
       add(a, b)
     end
     """
@@ -324,28 +293,6 @@ defmodule OvoTest do
       end
 
       sometimes_add_things(#{num})
-      """
-    end
-
-    {{:integer, [], 2}, _} = Ovo.run(program.(2))
-    {{:integer, [], 3}, _} = Ovo.run(program.(0))
-  end
-
-  test "basic shakeing evaluation 2" do
-    program = fn num ->
-      """
-      sometimes_add_things = !\\a -> if equals(a, 0) then
-          add(add(1, a), 2)
-        else
-          2
-        end
-      end
-
-      sometimes_add_things(#{num})
-      sometimes_add_things(add(#{num}, 1))
-
-      shake(sometimes_add_things)
-      shake(sometimes_add_things)
       """
     end
 

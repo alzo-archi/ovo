@@ -215,19 +215,6 @@ defmodule Ovo.Parser do
     end
   end
 
-  def p_shake(tokens) do
-    case C.match(:shake).(tokens) do
-      {:ok, _, rest} ->
-        case p_lambda(rest) do
-          {:ok, lambda, rest} -> {:ok, Ast.shake(lambda), rest}
-          _ -> {:error, nil, tokens}
-        end
-
-      b ->
-        b
-    end
-  end
-
   def p_lambda(tokens) do
     case C.all([
            C.match(:backslash),
@@ -294,7 +281,6 @@ defmodule Ovo.Parser do
   """
   def p_expression(tokens) do
     case C.any([
-           &p_shake/1,
            &p_lambda/1,
            &p_assignment/1,
            &p_infixer/1,

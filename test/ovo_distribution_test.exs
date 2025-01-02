@@ -18,7 +18,7 @@ defmodule OvoDistributionTest do
     {:ok, hash1} = Ovo.Runner.register(code1, "foo")
     {:ok, hash2} = Ovo.Runner.register(code2, "bar")
 
-    assert hash2 == "1I9Jp"
+    assert hash2 == "1I9JpT6EfvQ6N37N7"
 
     assert {:integer, [], 11} ==
              Ovo.Registry.run_chain([hash2, hash1], [5])
@@ -26,14 +26,8 @@ defmodule OvoDistributionTest do
     assert {:integer, [], 15} ==
              Ovo.Registry.run_chain([hash2, hash1], [7])
 
-    assert {:integer, [], 14} ==
-             Ovo.Runner.shake(hash2)
-
-    assert {:integer, [], 10} ==
-             Ovo.Runner.shake(hash2)
-
     assert {:integer, [], 16} ==
-             Ovo.Runner.run("1I9Jp", [8])
+             Ovo.Runner.run("1I9JpT6EfvQ6N37N7", [8])
   end
 
   test "program linking 2" do
@@ -56,8 +50,6 @@ defmodule OvoDistributionTest do
 
     assert add_and_add_one.(2, 3) == {:integer, [], 6}
     add_and_add_one.(6, 6)
-    Ovo.Runner.shake(ovo_add_one)
-    assert Ovo.Runner.shake(ovo_add_one) == {:integer, [], 6}
   end
 
   test "program linking 3" do
@@ -71,11 +63,11 @@ defmodule OvoDistributionTest do
 
     {:ok, hash} = Ovo.Runner.register(code, "foo")
 
-    assert hash == "1I9Jp"
+    assert hash == "1I9JpT6EfvQ6N37N7"
 
     code2 = """
     z = add(arg(0), 5)
-    invoke(`1I9Jp`, [z])
+    invoke(`#{hash}`, [z])
     """
 
     {:ok, dependent_hash} = Ovo.Runner.register(code2, "bar")
@@ -112,12 +104,11 @@ defmodule OvoDistributionTest do
     {:ok, dependent_program} =
       Ovo.Runner.register(
         """
-          invoke(`9tozX`, [2])
+          invoke(`#{ovo_times2}`, [2])
         """,
         "test"
       )
 
     {:integer, [], 4} = Ovo.Runner.run(dependent_program, [])
-    {:integer, [], 4} = Ovo.Runner.shake(dependent_program)
   end
 end

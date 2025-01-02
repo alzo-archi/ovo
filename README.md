@@ -1,7 +1,7 @@
 # Ovo
 
 Ovo is hosted by Elixir.
-It is now used as a data scripting language in Alzo.archi and the weird features of the previous toy implementation ( https://github.com/lucassifoni/ovo ) will be deleted.
+It is now used as a data scripting language in Alzo.archi and the weird features of the previous toy implementation ( https://github.com/lucassifoni/ovo ) will be deleted. This means proper error handling is also coming.
 
 ## Current state
 
@@ -23,42 +23,7 @@ Which returns `123` (the addition of fibs(10), 89 and fibs(8), 34).
 
 ## State-of-the-art features
 
-Besides being impractical, Ovo has two distinguishing features : `shakes` and the ability to be ran as a global stateful system.
-
-### shake
-
-The `shake` feature in ovo works with lambdas that have been declared with a `!` before their argument list.
-A regular lambda is  `\a -> add(a, 1) end`, whereas a shakeable lambda is `!\a -> add(a, 1) end`.
-A shakeable lambda pushes its results in a stack, like this :
-
-```elixir
-add_one = !\a -> add(a, 1) end # a stack [] is created
-add_one(1) # produces the value 2, stack is [2]
-add_one(3) # produces the value 4, stack is [4, 2]
-```
-
-Calling `shake` on a shakeable lambda pops a value from its stack.
-
-```elixir
-add_one = !\a -> add(a, 1) end # a stack [] is created
-add_one(1) # produces the value 2, stack is [2]
-add_one(3) # produces the value 4, stack is [4, 2]
-shake(add_one) # produces the value 4, stack is [2]
-shake(add_one) # produces the value 2, stack is []
-shake(add_one) # to this day, returns :error which isn't an ovo-compatible value
-```
-
-You can imagine things like :
-
-```elixir
-add_one = !\\a -> add(a, 1) end
-add_one(1)
-add_one(3)
-add_one(4)
-a = shake(add_one)
-shake(add_one)
-add(a, shake(add_one))
-```
+Besides being impractical, Ovo has a distinguishing feature : the ability to be ran as a global stateful system.
 
 ### A global stateful system
 
@@ -100,12 +65,3 @@ Ovo.Runner.run(dependent_program, []) # %Ovo.Ast{value: 4}
 ```
 
 What's nice here is that noone can pull the rug from beneath you : since program hashes are deterministic from the serialized AST, a program cannot change its behavior without changing its hash (well, except for collisions).
-
-*Of course*, you can also `shake` runners to get their previous execution result, which is popped from a stack. You are *of course* responsible for not shakeing a runner with an empty stack. shakeing a runner from its hash from within another ovo program is possible with `rshake/1`.
-
-```elixir
-Ovo.Runner.shake(dependent_program) #  %Ovo.Ast{value: 4}
-Ovo.Runner.shake(dependent_program)
-17:14:13.814 [error] GenServer Ovo.Registry terminating
-** (FunctionClauseError) no function clause matching in anonymous fn/1 in Ovo.Registry.pop_result/1
-```

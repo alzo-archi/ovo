@@ -3,7 +3,6 @@ defmodule Ovo.Ast do
   Defines an AST node for Ovo. See type `kind` for details on the type of nodes available.
   Contains helper functions to avoid manually writing Ast structs.
   """
-  alias Ovo.Ast
 
   @typedoc """
   The various node kind atoms allowed.
@@ -24,7 +23,6 @@ defmodule Ovo.Ast do
           | :condition
           | :lambda
           | :call
-          | :shake
 
   @typedoc """
   An Ast node.
@@ -106,12 +104,6 @@ defmodule Ovo.Ast do
   @spec assignment(t(), t()) :: t()
   def assignment(symbol, expr) when is_tuple(symbol) and is_tuple(expr),
     do: make(:assignment, symbol, expr)
-
-  @doc """
-  Instantiates a shakable lambda node, where lambda must be a Lambda ast node.
-  """
-  @spec shake(t()) :: t()
-  def shake(lambda) when is_tuple(lambda), do: make(:shake, lambda, [])
 
   @doc """
   Instantiates a block node. Will probably be removed.
