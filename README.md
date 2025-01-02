@@ -1,31 +1,14 @@
 # Ovo
 
-## Warning : the playground does not work as of 2024-04-24 as I'm rewriting the Ast from structs to tuples.
-
-**Ovo is a small toy/side-project language**
-
 Ovo is hosted by Elixir.
-It is a reimplementation from scratch of a previous (private) implementation in typescript, and has nothing in common anymore with the previous implementation.
-
-## Goals
-
-- [x] Tokenizing, parsing, printing, running programs
-- [x] Visual editor with LiveView .. well.. sort of
-
-## The playground
-
-Ovo can be used in a playground, which is a Liveview app allowing for visual edition of Ovo programs, runner registration, chains of runners, manual stacks shakeing, and orchestration of the execution of Ovo programs.
-
-![](screenshot.png)
-
-Complex programs are made possible due to Ovo's capabilities (detailed below), forming the Ovo Optimal Personal System (oops).
+It is now used as a data scripting language in Alzo.archi and the weird features of the previous toy implementation ( https://github.com/lucassifoni/ovo ) will be deleted.
 
 ## Current state
 
 Ovo in its current state is capable of correctly running this input :
 
 ```elixir
-fibs = !\\a ->
+fibs = \\a ->
   if greater_or_equals(a, 2) then
     add(fibs(subtract(a, 1)), fibs(subtract(a, 2)))
   else
@@ -34,8 +17,6 @@ fibs = !\\a ->
 end
 
 fibs(10)
-
-add(shake(fibs), shake(fibs))
 ```
 
 Which returns `123` (the addition of fibs(10), 89 and fibs(8), 34).
@@ -46,9 +27,9 @@ Besides being impractical, Ovo has two distinguishing features : `shakes` and th
 
 ### shake
 
-The `shake` feature in ovo works with lambdas that have been declared with a `!` before their argument list.  
-A regular lambda is  `\a -> add(a, 1) end`, whereas a shakeable lambda is `!\a -> add(a, 1) end`.  
-A shakeable lambda pushes its results in a stack, like this :  
+The `shake` feature in ovo works with lambdas that have been declared with a `!` before their argument list.
+A regular lambda is  `\a -> add(a, 1) end`, whereas a shakeable lambda is `!\a -> add(a, 1) end`.
+A shakeable lambda pushes its results in a stack, like this :
 
 ```elixir
 add_one = !\a -> add(a, 1) end # a stack [] is created
@@ -56,7 +37,7 @@ add_one(1) # produces the value 2, stack is [2]
 add_one(3) # produces the value 4, stack is [4, 2]
 ```
 
-Calling `shake` on a shakeable lambda pops a value from its stack.  
+Calling `shake` on a shakeable lambda pops a value from its stack.
 
 ```elixir
 add_one = !\a -> add(a, 1) end # a stack [] is created
@@ -67,7 +48,7 @@ shake(add_one) # produces the value 2, stack is []
 shake(add_one) # to this day, returns :error which isn't an ovo-compatible value
 ```
 
-You can imagine things like :  
+You can imagine things like :
 
 ```elixir
 add_one = !\\a -> add(a, 1) end
@@ -128,10 +109,3 @@ Ovo.Runner.shake(dependent_program)
 17:14:13.814 [error] GenServer Ovo.Registry terminating
 ** (FunctionClauseError) no function clause matching in anonymous fn/1 in Ovo.Registry.pop_result/1
 ```
-
-## Frequently asked questions
-
-- Q : I'm running this in production to allow high-level scripting for my organization's billing system. Can you provide  us some support ?  
-A : Please never contact me again  
-- Q : What's the use ?  
-  A : *\<indistinct chatter\>*
