@@ -5,7 +5,7 @@ It is now used as a data scripting language in Alzo.archi and the weird features
 
 ## Current state
 
-Ovo in its current state is capable of correctly running this input :
+Ovo in its current state is capable of correctly running small programs :
 
 ```elixir
 fibs = \a ->
@@ -21,11 +21,9 @@ end
 fibs(10)
 ```
 
-Which returns `123` (the addition of fibs(10), 89 and fibs(8), 34).
+## Unusual features
 
-## State-of-the-art features
-
-Besides being impractical, Ovo has a distinguishing feature : the ability to be ran as a global stateful system.
+Ovo has a distinguishing feature : the ability to be ran as a global stateful system. **This will be deprecated very soon**.
 
 ### A global stateful system
 
@@ -46,14 +44,14 @@ multiply(arg(0), 2)
 You can then call those runners with input :
 
 ```elixir
-Ovo.Runner.run(ovo_adder, [2, 3]) # %Ovo.Ast{value: 5}
-Ovo.Runner.run(ovo_times2, [5]) # %Ovo.Ast{value: 10}
+Ovo.Runner.run(ovo_adder, [2, 3])
+Ovo.Runner.run(ovo_times2, [5])
 ```
 
 You can also chain calls to programs, by giving their hashes to the registry, like so :
 
 ```elixir
-Ovo.Registry.run_chain([ovo_adder, ovo_times2], [2, 3]) # %Ovo.Ast{value: 10}
+Ovo.Registry.run_chain([ovo_adder, ovo_times2], [2, 3])
 ```
 
 If you know some program's hash (which is deterministic), you can also call it from another program with `invoke/2` :
@@ -65,5 +63,3 @@ invoke(`0ceaimhlh`, [2])
 
 Ovo.Runner.run(dependent_program, []) # %Ovo.Ast{value: 4}
 ```
-
-What's nice here is that noone can pull the rug from beneath you : since program hashes are deterministic from the serialized AST, a program cannot change its behavior without changing its hash (well, except for collisions).
