@@ -264,10 +264,12 @@ defmodule OvoTest do
     bar <= baz
 
     fibs = \\a ->
-      if greater_or_equals(a, 2) then
-          add(fibs(subtract(a, 1)), fibs(subtract(a, 2)))
+      if a >= 2 then
+        b = a - 1
+        c = a - 2
+        fibs(b) + fibs(c)
       else
-          1
+        1
       end
     end
 
