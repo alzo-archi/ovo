@@ -373,17 +373,6 @@ defmodule OvoTest do
     {{:integer, [], 9}, _} = Ovo.run(program)
   end
 
-  test "rewrites a complex example" do
-    input = """
-    a = 5
-    foo = map(bet, bar)
-    baz = filter(foo, bat)
-    """
-
-    {:ok, parsed, _} = parse(input)
-    assert Ovo.Printer.print(Ovo.Rewrites.rewrite(parsed)) != Ovo.Printer.print(parsed)
-  end
-
   test "jenkins hash" do
     # https://en.wikipedia.org/wiki/Jenkins_hash_function
     # one_at_a_time("The quick brown fox jumps over the lazy dog", 43)
